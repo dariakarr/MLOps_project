@@ -2,7 +2,6 @@
 name = "pneumonia-detector"
 version = "0.1.0"
 description = "Проект для автоматической диагностики пневмонии"
-authors = ["Иван Петров <ivan.petrov@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

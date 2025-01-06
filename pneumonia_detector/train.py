@@ -1,17 +1,28 @@
-from pneumonia_detector.data_module import PneumoniaDataModule
-from pneumonia_detector.model_module import PneumoniaModel
+import hydra
+from omegaconf import DictConfig
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
-import torch
-from torch import nn
-import torchvision.transforms as T
-import torchvision.datasets as datasets
-from torch.utils.data import DataLoader
+from pytorch_lightning.loggers import TensorBoardLogger
 
 
-def main():
-    data_module = PneumoniaDataModule(data_dir="./data", batch_size=8)
-    model = PneumoniaModel(lr=1e-4)
+@hydra.main(version_base=None, config_path="../configs", config_name="train")
+def main(cfg: DictConfig):
+    from data_module import PneumoniaDataModule
+    from model_module import PneumoniaModel
+
+    # параметры из Hydra
+    data_dir = cfg.data.data_dir
+    batch_size = cfg.data.batch_size
+
+    lr = cfg.model.lr
+
+    max_epochs = cfg.train.max_epochs
+    accelerator = cfg.train.accelerator
+
+    data_module = PneumoniaDataModule(data_dir=data_dir, batch_size=batch_size)
+
+    model = PneumoniaModel(lr=lr)
+
     checkpoint_callback = ModelCheckpoint(
         dirpath="./models",
         filename="best-checkpoint",
@@ -19,11 +30,17 @@ def main():
         monitor="val_loss",
         mode="min",
     )
-    trainer = pl.Trainer(
-        max_epochs=3,
-        callbacks=[checkpoint_callback],
-        gpus=0,  # 1 for gpu
+
+    logger = TensorBoardLogger(
+        save_dir=cfg.logging.save_dir,  # путь из hydra
     )
+
+    trainer = pl.Trainer(
+        max_epochs=max_epochs,
+        callbacks=[checkpoint_callback],
+        accelerator=accelerator,
+    )
+
     trainer.fit(model, data_module)
     trainer.test(model, data_module)
 

@@ -1,0 +1,2 @@
+logging:
+  save_dir: "./lightning_logs"

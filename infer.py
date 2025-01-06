@@ -2,6 +2,7 @@ import torch
 import argparse
 import torchvision.transforms as T
 from PIL import Image
+from pneumonia_detector.model_module import PneumoniaModel
 
 
 def main():
@@ -16,8 +17,10 @@ def main():
         help="Путь к файлу .ckpt или .pt модели.",
     )
     args = parser.parse_args()
-
-    model = torch.load(args.checkpoint, map_location=torch.device("cpu"))
+    model = PneumoniaModel()
+    checkpoint = torch.load(args.checkpoint, map_location=torch.device("cpu"))
+    state_dict = checkpoint["state_dict"]  # Extract state_dict
+    model.load_state_dict(state_dict)
     model.eval()
 
     transform = T.Compose([T.Resize((224, 224)), T.ToTensor()])

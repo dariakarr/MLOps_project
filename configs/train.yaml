@@ -1,0 +1,8 @@
+defaults:
+  - data
+  - model
+  - logging
+
+train:
+  max_epochs: 10
+  accelerator: "auto"

@@ -1,0 +1,7 @@
+[core]
+    remote = s3storage
+['remote "s3storage"']
+    url = s3://my-dvc-bucket
+    endpointurl = https://my-custom-s3-endpoint.com
+    access_key_id = SECRET_ID
+    secret_access_key = SECRET_KEY

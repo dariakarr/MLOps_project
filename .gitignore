@@ -5,8 +5,6 @@ __pycache__/
 poetry.lock
 
 # Data / Checkpoints / Notebooks
-*.jpeg
-*.png
 *.pt
 *.ckpt
 *.ipynb
